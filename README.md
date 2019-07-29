@@ -5,4 +5,4 @@ The content are:
   Computer Organization(计算机组成原理)
   Discrete Math(离散数学)
   Design and Analysis of Algorithms(算法设计与分析))
-Done
+This repositories is done, which means it will not be updated.
