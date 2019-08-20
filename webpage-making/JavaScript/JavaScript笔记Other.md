@@ -1,4 +1,4 @@
-# JavaScript
+# JavaScript笔记Other
 
 基本类型：String，number（小数整数都算），boolean
 
