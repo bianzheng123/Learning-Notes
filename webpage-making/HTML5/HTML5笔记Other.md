@@ -14,7 +14,7 @@
 
 ## 属性和参数
 
-- 按钮```<button></button>```
+- 按钮```<button class=""></button>```
 - 输入```<input type=""></input>```
   - type代表输入的类型，可以选择的有复选框checkbox,button,hidden等
 - inline，block：
