@@ -1,5 +1,16 @@
-# course-review-year-2
-Summary of professional courses in the second semester of the second year in SUSTech(南方科技大学). <br/>
+# Course-Review-Year-3
+
+Summary of professional courses in the second semester of the second year in Southern University of Science and Technology of China(南方科技大学). <br/>
+The content are:<br/>
+
+- Computer Network（计算机网络）
+- Artificial Intelligence（人工智能）
+- Object-oriented Analysis and Design（面向对象分析与设计）
+- Embedded System and Microcomputer Principle（嵌入式系统与微机原理）
+
+# Course-Review-Year-2
+
+Summary of professional courses in the second semester of the second year in Southern University of Science and Technology of China(南方科技大学). <br/>
 The content are:<br/>
 
 - Database System(数据库系统原理)
@@ -18,7 +29,7 @@ The learning source are:<br/>
 - HTML5： http://www.sikiedu.com/my/course/206
 - CSS：http://www.sikiedu.com/course/207
 
-Besides the online learning, some of the notes came from UCI EUR summer programme.
+Besides the online learning, some of the notes came from UCI EUR summer program.
 
 # Python
 
