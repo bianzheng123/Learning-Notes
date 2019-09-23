@@ -257,7 +257,7 @@ $$
 
 将malware放到主机中
 
-- virus：需要动作
+- virus：需要用户的互动
 
 - worm：只要接收到，就开始工作
 
@@ -265,7 +265,7 @@ spyware malware：记录所有包的传递（wireshark）
 
 botnet：所有的客户端都被感染，形成的僵尸网络
 
-Denial of Service                                                                                                             
+Denial of Service：发送大量流量，削弱或者损坏服务器                                                                                                             
 
 packet sniffing：监听所有包
 
