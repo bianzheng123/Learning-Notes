@@ -47,8 +47,32 @@ Indirect Addressing
   - cortexM用的是little endian
 - Base plue offset addressing
   - `LDR r6,[r11,#12]`指的是将r11加12作为基址，将结果放到r6中
+    - r6 = mem32[r11 + 12]
   - `LDR r6,[r11,#12]!`指在执行操作后，r6的值不仅会变化，r11的值也会加上12
+  - `LDR r0,[r1],#4`
+    - r0 = mem32[r1]
+    - r1 = r1 + 4
 
 ### Restriction
 
 ARM中，没有向左移操作，可以使用右移代替左移
+
+semantic gap：高级语言和汇编之间的差距
+
+## code density
+
+用来衡量给定函数中指令占据内存的大小
+
+原本指令需要存储4个东西
+
+- function，op1address，op2address，dest address，next instruction address
+
+使用r15代替了下一个指令的存储地址，从而减少了指令的长度
+
+- 如果永远将dest address作为op1address，例如d:= d + s1
+
+则dest address就也能减少，就只需要存储3块内容
+
+- 指定一个特定的寄存器，进行相加，指令就只需存储2块内容，例如：accumulator:=accumulator+s1
+
+- 将所有的操作数放到一个栈中，永远使得top_of_stack:=top_of_stack + next_on_stack，则指令只需要存储function的内容
