@@ -245,8 +245,95 @@ $$
 
 ## Word2vec
 
-使用一个方法来代表一个单词：使用短（short）和密集（大多数的值都是非零的）的向量
+使用一个方法来代表一个单词：尽可能地使用短（short）和密集（大多数的值都是非零的）的向量
 
 这一节讲的是skipgram with negative smapling（SGNS）
 
-原本是计算单词w距离目标词汇有多近，现在是在二进制预测任务上面训练（就是回答是和不是），关心的是分类的权重作为单词的嵌入
+原本是计算单词w距离目标词汇有多近，现在是在二进制预测任务上面训练（就是回答是和不是），关心的是当单词的嵌入时分类器的权重
+
+这样我们就能将文本作为分类器的指导数据
+
+- 当机器在文本中搜索时，自己指定一个单词作为目标词汇
+- 每搜索一个词w，就问w是否靠近目标单词
+- 这样就避免了人为的指导
+
+word2vec就只是问是和不是，而不是进行单词预测
+
+skip-gram
+
+- 将目标词汇及其临近的词汇作为好的样例
+- 随机的在词典中挑选词作为不好的样例
+- 使用logistic regression让分类器分清楚这两种情况
+- 使用regression weight作为目标词汇的数据
+
+### The classifier
+
+假设目标词汇是apricot，其左右相邻的两个词汇为tablespoon, of, jam, a
+
+目标是训练一个分类器，使得给定一个元组（t，c），其中t是目标词汇，c是候选的临近的词汇（比如说(apricot,jam)，(apricot,aardvark)），返回的是c是否是真的文本单词的概率（对于jam，就是对的，但是aardvark就是错的）
+
+记c是临近词汇的概率为
+$$
+P(+| t, c)
+$$
+则c不是临近词汇的概率等于1减是临近词汇的概率
+$$
+P(-| t, c)=1-P(+| t, c)
+$$
+计算概率P的方法
+
+- 直觉：如果一个单词和目标词汇意思相近，则他们更有可能出现在与目标词汇相邻的区域
+- 如果两个向量很相似，则他们的点乘等于模的乘积
+
+$$
+\text { Similarity }(t, c) \approx t \cdot c
+$$
+
+为了将相似度变成概率，使用logistic function
+$$
+\sigma(x)=\frac{1}{1+e^{-x}}
+$$
+其中，x就是$Similarity(t,c)$
+
+所以c是临近单词的概率就是
+$$
+P(+| t, c)=\frac{1}{1+e^{-t \cdot c}}
+$$
+对于多个单词，其概率就是概率的乘积
+$$
+\begin{aligned} P\left(+| t, c_{1 : k}\right) &=\prod_{i=1}^{k} \frac{1}{1+e^{-t \cdot c_{i}}} \\ \log P\left(+| t, c_{1 : k}\right) &=\sum_{i=1}^{k} \log \frac{1}{1+e^{-t \cdot c_{i}}} \end{aligned}
+$$
+综上，skip-gram就是训练一个概率分类器，计算目标单词和临近单词的相似度，而这种计算相似度的方法使用logistic函数，点乘得到
+
+从起始集合开始训练（真正相邻目标文本的单词）
+
+### Learning skip-gram embeddings
+
+通过随机在字典中找，通过输入的比率k得到不好的样例
+
+不好的样例数量是好的样例数量的k倍
+
+这些不好的样例叫“noise word”
+
+noise words根据其weighted unigram frequency $p_{\alpha}(w)$得到
+
+- 不能用unweighted frequency $p(w)$
+
+- 这样会使得*the* 变成noise word
+  $$
+  P_{\alpha}(w)=\frac{\operatorname{count}(w)^{\alpha}}{\sum_{w^{\prime}} \operatorname{count}\left(w^{\prime}\right)^{\alpha}}
+  $$
+
+- 
+
+- 调整$\alpha$才能使得稀有的单词得到更好的结果
+
+
+
+
+
+
+
+**logistic regression是啥**
+
+**embedded啥意思**
