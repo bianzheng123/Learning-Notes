@@ -214,3 +214,237 @@ ACK不会变成NAK，在检测过程中会通不过
 - 发送了第一次包之后，就开启了计时器
 - 如果timeout，就重新发送包，并重新开始计时
 - 当接收到对应的ACK后，停止计时
+- timeout设置
+  - 如果timeout设置的太少了，ACK就会在timeout之后到达，就会发生两次重传的缺点
+    - timeout应该比传输包的事件快一点
+  - 如果timeout设置的太高了，影响同步效率
+
+## 流水线可靠数据传输协议
+
+prop delay是单向的时间
+
+RTT是往返的时间
+
+使用RTT代表包的时间（需要ACK，而不单单是包的传递）
+
+eg：
+
+两个主机之间通信，往返传播时延RTT为30ms，通过一条发送速率R为1Gbps的信道相连，包的长度为8000bit
+
+对于发送端，发送所需要的时间为
+$$
+t_{\text {trans }}=\frac{L}{R}=\frac{8000 \mathrm{bit} / \mathrm{pkt}}{10^{9} \mathrm{bit} / \mathrm{s}}=8 \mu \mathrm{s} / \mathrm{pkt}
+$$
+因此，该分组的最后1bit在$t=15.008ms$到达接收方
+
+假设ACK分组很小，则ACK在$t=RTT+L/R=30.008ms$到达发送方
+
+在30.008ms的时间内，发送方只用了0.008ms进行发送
+
+定义利用率utilization为：往返的时间/总时间，即利用率为
+$$
+U_{\text {ender }}=\frac{L / R}{\mathrm{RTT}+L / R}=\frac{0.008}{30.008}=0.00027
+$$
+因此，发送方有着非常低的利用率，要想实现比较高的利用率，就要同一时刻发送多个包（pipelining）
+
+既然空中不再只是一个包，就需要增加序号范围，每个传输中的分组必须有多个序号
+
+解决分组的差错恢复有两种基本方法
+
+- 回退N步（Go-Back-N）
+- 选择重传（Selective Repeat）
+
+### Go-Back-N
+
+我们假设n为4，就是一个分组同时发送4个包，也就是空中没有发送ACK的包是4个
+
+这种方法假设接收端中没有缓冲
+
+- 接收方必须按照顺序接受包
+- 如果收到了乱序的包，接收端就会丢弃
+
+这种方法做了一个保证（cumulative ACK）
+
+- 如果收到了ACKn，意味着n之前的全部包都被正确的接收了
+
+Sender window
+
+- 用于表示发送方的包的各种状态
+
+![img](./Snipaste_2019-10-21_14-15-24.png)
+
+[^Fig.7]: 
+
+定义base为黄色的第一个
+
+nextseqnum为蓝色第一个
+
+如Fig.7，发送端的包有四种状态
+
+- 已经发送完，并接收完了，用绿色表示，此时不在Sender window中
+- 目前不在该分组中，就是Sender window还没有移动到那里的包，用白色表示
+- 在Sender window中，正在等待ACK的，用黄色表示
+- 在Sender window中，还没有发送的，用蓝色表示
+
+![img](./Snipaste_2019-10-21_14-21-57.png)
+
+[^Fig.8]: 
+
+如Fig.8
+
+正常情况
+
+- 发送端会依次发送一个分组，里面包含很多个包
+
+- 接收端只能按照包的序号接收，接收完后就发送对应的ACK
+- 发送端接收ACK后，Send window就往前一格，并发送下一个分组的包
+
+发送端丢包
+
+- 发送端发出的pkt2丢失
+- 接收端原本接受的是pkt2，却收到了pkt3，则舍弃pkt3，发送ACK1（只是正确的收到了pkt1，所以只发送ACK1），重新等待包的发送
+- Sender window挪到2时检测到timeout，就重新发送该分组已经发送的包
+
+#### 要点
+
+如果收到了对应的ACK，就发送下一个n的倍数的包
+
+当timeout时，就传输window中所有的包（所以叫Go-Back-N）
+
+如果window是空的（全部都是等待发送的包），就开始计时
+
+如果发生了timeout，则发送的包是黄色的部分，而不是sender window全部
+
+如果收到了ACK，黄色变成绿色
+
+如果等的是ACK0，收到了ACK4，就移动sender window
+
+- receiver保证了只能收到正确的对应顺序的包
+
+对于接收方，如果收到了不同的或者错误的包，就发送之前的ACKn
+
+其FSM如Fig.9，Fig.10
+
+![img](./Snipaste_2019-10-21_14-37-59.png)
+
+[^Fig.9]: 发送端的FSM
+
+![img](./Snipaste_2019-10-21_14-38-57.png)
+
+[^Fig.10]: 接收端FSM
+
+缺点：当timeout时就会发送所有未发送的包，就很占用带宽
+
+### Selective repeat
+
+接收方存放一个缓存，timeout时就不需要发送多个包了
+
+sender windows，receiver windows如下所示
+
+![img](./Snipaste_2019-10-21_14-47-28.png)
+
+[^Fig.11]: 
+
+Sender window同Go-Back-N
+
+Receiver window有四种状态
+
+- 该分组中还没有接收到的，用蓝色表示
+- 不在分组中的，用白色表示
+- 在缓存中的，用粉色表示
+- 由于丢包等待接收的，用灰色表示（某种程度上，灰色和蓝色相同）
+
+关系如Fig.12
+
+![img](./Snipaste_2019-10-21_14-44-33.png)
+
+[^Fig.12]: 
+
+正常情况
+
+- 和Go-Back-N类似
+
+发送包丢失
+
+- 接收端没有接收到pkt2，却接收到了pkt3，就把pkt3放到缓存中（pkt4，pkt5同理），并发送ACK3
+- 发送端没有收到ACK2，并且过了时间，就发送pkt2
+- 接收端收到pkt2，发送ACK2，将存放在缓存中连续的包放到主机中，并将receive window移动到第一个未接受的包
+- 发送端收到了ACK2，将send window移动到未收到ACK的第一个包的位置
+
+#### 要点
+
+只有收到了对应的最小的ACK，才能move window
+
+对于发送端，要记住是否收到了sender window中的ACK
+
+对于接收方，如果收到了不在window中的包，就重新发送ACKn，让sender window前进（ACK发送端没有收到）
+
+所以packet number就不能太小，如果发送端没有收到ACK，就会重新发送上一个包中的内容作为该包的内容，从而影响数据完整性
+
+## TCP
+
+一个接收端和发送端
+
+中间路由器对TCP连接完全视而不见
+
+TCP连接提供的是全双工服务（full-duplex service），即双向传输
+
+协议结构如Fig.13
+
+![img](./Snipaste_2019-10-21_15-11-37.png)
+
+[^Fig.13]: 
+
+### 序号（sqeuence）和确认号（ACK）
+
+TCP中序号表示的是文件传输的为第几个byte（in unit of byte）
+
+ACK也是表示第几个byte（cumulative ack）
+
+- 主机A填充进报文段的确认号是主机A期望从主机B收到的下一字节的序号
+- 假设主机A已经收到了来自主机B的编号为0~535的所有字节，同时假设它打算发送一个报文段给主机B。主机A等待主机B的数据流中字节536及之后的所有字节。所以主机A就会在它发往主机B的报文段的确认号字段中填上536
+  - 积累确认(cumulative acknowledgment)
+
+使用sequence number（这个包的sequence number）还有ACK number（上一包的ACK number）
+
+双向传输使得在发data的过程中也发ACK，两者合一
+
+#### 例子
+
+客户发给服务器一个字母C，服务器接收到客户的请求后回传给客户C
+
+假设客户和服务器的起始序号（sequence）为42和79，则发送的协议如Fig.14所示
+
+![img](./Snipaste_2019-10-21_15-23-06.png)
+
+[^Fig.14]: 
+
+### 往返时间的估计与超时
+
+超时的时间间隔必须大于该连接的往返时间RTT，一般的，timeout是根据网络质量估计动态生成的
+
+TCP会在某一时刻测量一个RTT，称为样本RTT（SampleRTT）
+
+由于SampleRTT随机性比较大，所以采用了对SampleRTT取平均的方法，就是不断地进行迭代，公式如下
+$$
+\text { EstimatedRTT }=(1-\alpha) \cdot \text { EstimatedRTT }+\alpha \cdot \text { SampleRTT }
+$$
+一般的α取0.125
+
+此外还要计算RTT的偏差DevRTT，也是采用了迭代的方法，公式如下
+$$
+\text { DevRTT }=(1-\beta) \cdot \text { DevRTT }+\beta \cdot | \text { SampleRTT - EstimatedRTT } |
+$$
+一般的，β取0.25
+
+则可以得到timeout的值
+$$
+\text { Timeoutlnterval }=\text { Estimated } \mathrm{RTT}+4 \cdot \text { DevRTT }
+$$
+一般的，初始Timeout取1
+
+## 要点
+
+TCP没有定义客户是否有缓冲
+
+link会有一个最高的rate，不能超过link提供的rate
