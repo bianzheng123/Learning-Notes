@@ -56,8 +56,11 @@ Delay ACK
 
 Updated ACK
 
-- 在特定的时间没有收到对应的ACK
-- 立即重传，不等冗余的ACK了
+- 在一定的时间范围内没有收到对应的ACK，立即重传，不等冗余的ACK了
+
+fast retransmit
+
+- 如果收到了三个相同的ACK就直接重传
 
 ## TCP流量控制（flow control）
 
@@ -117,7 +120,13 @@ window size代表着接收方能缓冲的最大长度
 
 单个的路由器溢出，会导致其他路由器一起瘫痪
 
+如果有timeout或者duplit ack，就有congestion control
+
 ### 解决方法
+
+涨的时候特别快，问题就很严重，路由器停止工作，不能涨的特别快
+
+降的时候，就要很快，不快就会产生很多丢包
 
 如果发生了丢包，就认为有congestion control
 
@@ -129,6 +138,10 @@ window size代表着接收方能缓冲的最大长度
 
 - 以后就线性增长
 
+普遍增长一个mss
+
+控制sender window大小来控制速率
+
 最大报文段长度（Maximum Segment Size）
 
 - 控制增长的幅度（根据包的大小决定）
@@ -138,8 +151,11 @@ window size代表着接收方能缓冲的最大长度
 Slow start
 
 - 一开始的指数增长
+- 直到涨到门限值
 
 Tahoe
+
+- 第一个版本的congestion control
 
 - 当发生了timeout（所有的包都接收不了）
 
@@ -147,9 +163,57 @@ Tahoe
 
 RENO
 
+- 后来版本的congestion control
+
 - 如果发生了冗余的包
 - congestion window减半
+
+一开始低于门限值就指数地涨
+
+门限值一般设置为1/2的window size
+
+如果想将window size从2变成4，接收到ACK时发送的包就加1
+
+如果window size从2变成8，接收ACK时发送的包就加倍
+
+TCP在很长的时间内会达到相同的吞吐率
+
+
+
+决定如何half或者1
+
+- timeout就代表所有的包都没了，接收window就变成1
+- dulipcate ack就代表所有的，接收window就减半
+
+
+
+flow fairness：
+
+对于两个链路使用congestion control，可以达到平衡，就是平分这个link
+
+设置了多个连接，就会有更高的tcp data rate
+
+
+
+Explicit Congestion Notification
+
+典型的TCP不是explicit
+
+路由器阻塞时就发送ECN，这样端系统就能立即知道路由器发生了阻塞
+
+运输层全部在操作系统中实现
+
+关注于网络边缘
+
+网络层在硬件和软件中实现
 
 #### 总结
 
 每一次开始就加1
+
+transport layer：
+
+demultiplexing，multiplexing
+
+rdt
+

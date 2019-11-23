@@ -30,5 +30,3 @@ telephone network：终端简单，中继站复杂（只能单向传输，两个
 
 computer network：终端复杂，中继站简单（只负责传输数据，不负责处理异常）
 
-### 
-
