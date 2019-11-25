@@ -173,3 +173,55 @@ Length：ip报文总共的长度
 第四个代表从第几个序号开始发送
 
 进行分片的各个包identification相同
+
+
+
+# Link State Routing
+
+dijistra算法
+
+将互联网分成administrative autonomy（AS）
+
+gateway router
+
+- 两种routing都用
+
+internal router
+
+- 只用intera-AS routing
+
+intra-AS routing
+
+inter-AS routing
+
+- 得到geteway router
+
+对于经过的AS，熟知这个节点的routing即可
+
+同一个网络中只能运行相同的路由算法
+
+### intra-AS routing
+
+#### OSPF
+
+multi-cast
+
+结点处分流
+
+### inter-AS routing
+
+BGP
+
+Prefix、AS-PATH、NEXT-HOP
+
+AS相互连通-shortest AS PATH，etc
+
+- Hot Potato Routing：只关心内部的traffic情况
+- advertisements：发送报文时不经过某个isp，如果客户被多个isp服务的话
+
+只要添加了一个设备，就进行广播给所有的AS，同一个AS中也要对路由器进行广播
+
+### SDN
+
+路由器中加一个os
+
