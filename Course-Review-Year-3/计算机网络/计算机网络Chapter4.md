@@ -225,3 +225,51 @@ AS相互连通-shortest AS PATH，etc
 
 路由器中加一个os
 
+### Network Management
+
+managing entity
+
+#### SNMP
+
+用来表示发生了什么错误
+
+request/response mode
+
+trap mode
+
+## Summary
+
+### forwarding
+
+data plane
+
+ip协议(重要)
+
+路由器构成
+
+### routing
+
+#### control plane
+
+ICMP
+
+SNMP
+
+link-state
+
+general routing algorithm
+
+#### intra-AS
+
+OSPF
+
+#### inter-AS
+
+BGP
+
+#### SDN
+
+openflow
+
+flow table
+
