@@ -1,0 +1,122 @@
+什么是jQuery？
+jQuery是一个封装好的JavaScript框架，可以更加简单的实现一些js的功能。
+里面提供了很多简单易用，功能强大的东东。
+兼容各个浏览器。
+
+使用前先引入
+<script type="text/javascript" src="xxxx.jQuery.js" ></script>
+
+想要等文档加载完再执行的函数
+1，在body里面添加onload事件
+2，window.onload = function (){}
+3，$(function(){});
+
+jQuery方式
+
+jQuery文档
+地址：http://api.jquery.com/
+文档下面的几个分类
+选择器		Selectors
+属性操作	Attributes
+特效		Effects
+事件		Events
+CSS样式处理	CSS
+遍历		Traversing
+操作DOM节点	Manipulation
+
+jQuery对象和DOM对象的区别
+
+获取并添加事件
+$("#id").click(function(){ });
+
+获取并设置内容
+$("#id").innerHTML = ""; // 错误
+$("#id").html("");
+
+获取html元素
+$("#id")
+参数是选择器
+
+选择器有哪些
+全部、类、标签、ID、多个
+选择器返回的是一个jQuery对象
+http://api.jquery.com/category/selectors/basic-css-selectors/
+
+----------jQuery广告弹窗
+
+显示和隐藏( 属于effect里面的basic )
+show()	//相当于 display:block
+第一个参数slow fast 毫秒数（速度）
+第二个参数是回调函数
+hide()
+第一个参数是速度
+第二个参数是回调函数
+Toggle
+如果是显示的就隐藏
+如果是隐藏的就显示
+滑动显示和隐藏
+slideDown
+slideUp
+参数跟上面的一样
+其他显示和隐藏效果
+fadeIn
+fadeOut
+
+表格各行换色
+作用：方便区分行与行之间的区别
+
+全选\全部不选
+1，先选择全选按钮
+2，添加事件 
+$("#selectBtn").click(function(){
+$("tbody input").attr("checked",this.checked);
+$("tbody input").prop("checked",this.checked);
+});
+
+省市联动
+1、选择器
+2、添加事件
+$("#province").change(
+funtion(){
+
+}
+);
+3、清空下拉列表
+$("#city").empty();
+
+jQuery插件
+1，jQuery特别容易扩展，开发者可以基于jQuery开发一些扩展动能
+2，插件:http://plugins.jquery.com/
+3，validation	pickadate		Echarts
+	chosen	ckeditor
+
+表单校验
+1，jQuery插件validation：https://jqueryvalidation.org/
+a、国际化（提示信息支持多国语言）
+b、validation是一个基于jQuery的插件，里面有了jQuery的一些函数和功能
+2，语法
+$(xx).validate({
+rules:{},
+messages:{}
+});
+3，rules:{
+username:{
+required:true,
+minlength:9,
+digits:true	,
+equalTo:"[name='reusername']"
+},
+password:{...}
+}
+4，	如果没有messages的话，会默认给出英文提示
+引入了国际化的message.js文件的话，也可以不写messages
+messages:{
+username:{
+required:"用户名必须填写",
+minlength:"最小长度为9位",
+digits:"必须由数字组成"
+},
+password:{...}
+}
+5，单选按钮处理：
+<label for="sex" class="error" style="display: none;"></label>

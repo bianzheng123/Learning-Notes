@@ -36,7 +36,7 @@
 
 ## 属性和参数
 
-输入框```<input type="" name="" value="" maxlength= placeholder="" checked/>```
+输入框```<input type="" name="" value="" maxlength= placeholder="" onblur="" checked/>```
 
 - type参数有text，password，radio, checkbox, submit, reset, button, image, hidden, file
   - text：以明文作为文本
@@ -56,6 +56,7 @@
 - maxlength代表能输入的最多的字符
 - placeholder代表提示的信息，输入时自动清空
 - checked用于单选框和多选框，代表默认勾选，写上就代表默认勾选
+- onblur代表用户离开输入框时的输入
 
 下拉列表```<select name="" size="3" multiple></select>```
 
@@ -75,15 +76,20 @@
 - placeholder显示提示信息
 - name表示传输的值
 
-表单```<form action="" method="post" name="" enctype=""></form>```
+表单```<form action="" method="post" name="" enctype="" onsubmit=""></form>```
 
 - action
   - 默认提交到当前页面
   - 指定了action的值浏览器就会提交参数到另外的页面上（可以提交到任意服务器可以处理的地方）
+  - 表示提交的路径，会添加到一个jsp文件中
 - method：代表提交的方法，参数有get和pose
   - get：提交时把参数放到链接的后面（密码暴露）
   - pose：将数据封装成一个包（http请求），不放到链接里面
   - 一般的，网页链接后面加上?的后面都是使用get的方式传输数据
+- onsubmit
+  - 如果返回值为false，就不执行action的文件/函数
+  - 如果返回值为true，就相反
+  - 默认返回值为true
 - 使用name确定标签
 - enctype控制编码的格式，两种格式
   - application/x-www-form-urlencoded：默认值
