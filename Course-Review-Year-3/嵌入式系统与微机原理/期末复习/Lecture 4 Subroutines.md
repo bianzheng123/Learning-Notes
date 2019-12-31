@@ -9,7 +9,7 @@ link register
 
 ### 流程
 
-执行其他函数时，调用BL（btanch and link）指令
+执行其他函数时，调用BL（branch and link）指令
 
 link register存放的是当前指令的地址加4，也就是从pc中得到值
 
@@ -57,4 +57,4 @@ logical shift right
 
 arithmetic shift right
 
-rotate right：向左移动，左边的消失的出现在右边
+rotate right

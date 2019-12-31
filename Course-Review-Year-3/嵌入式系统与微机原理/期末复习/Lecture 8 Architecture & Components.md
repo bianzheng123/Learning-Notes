@@ -27,7 +27,7 @@ ARM1 ripple-carry adder circult
 
 ![img](./Snipaste_2019-12-29_17-16-27.png)
 
-ARM2 ripple-carry adder circult
+ARM2 4-bit carry look-ahead
 
 每四个为一个单位，进行添加
 
@@ -47,6 +47,18 @@ ARM6 carry select adder
 
 加1就变成了基于2的补码
 
+### carry propagate
+
+三个数相加，串行的得到结果
+
+![img](./Snipaste_2019-12-30_11-21-29.png)
+
+### carry save adder
+
+对于每一位，算出partial sum和partial carry
+
+结果就是S + 2C
+
 ## 乘法
 
 规则：分成多步
@@ -64,7 +76,10 @@ A*B
 4. 将multiplier右移一位
 5. 重复步骤2直到multiplier为0
 
-顺序执行乘法-----Booth's algorithm
+### 顺序执行乘法-----Booth's algorithm
+
+负数的乘法也适用
 
 ![img](./Snipaste_2019-12-29_17-58-11.png)
 
+使用了booth算法和carry save，32位的乘法变成了只需要5个时钟周期

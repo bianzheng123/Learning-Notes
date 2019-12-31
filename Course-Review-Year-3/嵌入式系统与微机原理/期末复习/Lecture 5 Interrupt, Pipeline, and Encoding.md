@@ -39,6 +39,10 @@ IRQ丢失7个时钟周期（跳转加上branch）
 
 FIQ则为4个
 
+load会丢失1个
+
+save会丢失2个
+
 ### Pipeline example
 
 ADDNE r11, r3, r7 LSR #8
