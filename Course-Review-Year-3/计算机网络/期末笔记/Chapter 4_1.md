@@ -1,10 +1,16 @@
 # Chapter 4_1
 
+三次握手的具体过程
+
+关闭socket连接的具体过程
+
 ### flow control
 
-控制接收方溢出
-
 改变窗口大小
+
+目的是防止接收方的缓冲区溢出
+
+TCP连接中，记录接收方剩余窗口大小
 
 ### congestion control
 
@@ -57,6 +63,9 @@ control plane		routing
 ## router
 
 ### input和output
+
+- **buffering**
+- **scheduling**
 
 line termination
 
