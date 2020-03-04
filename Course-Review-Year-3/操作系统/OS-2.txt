@@ -1,0 +1,33 @@
+timer是syscall
+syscall是唯一和kernel交互的接口
+printf()和scanf()
+malloc()和free()
+fopen()和fclose()都不是syscall
+mkdir()和rmdir()
+chown()和chmod()是syscall
+	只是将外部的函数链接进来了
+	syscall指的是该函数使用了kernel所提供api
+了解编译的所有过程
+segmentation=>内存将不同部分的c代码分配给不同的地方
+Virtual Memory
+一个OS可以兼容多个FS
+每个硬件可以有多个FS
+everything in linux is a file
+FS是OS的一部分
+cache中
+	L1L2:non-shell，连续块
+	L3:shelled
+冯诺依曼结构:
+	memory通过DMA于divice连接
+	
+一个进程有多个线程，但是只能有一个地址空间
+Thread
+
+Address space
+
+Process
+
+Dual mode operation/Protection
+
+OS Bottom Line：可以跑程序的地方
+栈从上到下运行，堆从下到上运行
